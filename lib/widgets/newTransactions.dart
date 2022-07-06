@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class NewTransactions extends StatefulWidget {
   final Function addTx;
@@ -14,6 +15,8 @@ class _NewTransactionsState extends State<NewTransactions> {
 
   final amountController = TextEditingController();
 
+  DateTime _selectedDate;
+
   void submitData() {
     final enteredTitle = titleController.text;
     final enteredAmount = double.parse(amountController.text);
@@ -28,6 +31,22 @@ class _NewTransactionsState extends State<NewTransactions> {
     // print(amountController);
     // print(titleInput);
     // print(amountInput);
+  }
+
+  void _presentDatePicker() {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2022),
+      lastDate: DateTime.now(),
+    ).then(
+      (pickedDate) {
+        if (pickedDate == null) {
+          return;
+        }
+        _selectedDate = pickedDate;
+      },
+    );
   }
 
   @override
@@ -52,11 +71,38 @@ class _NewTransactionsState extends State<NewTransactions> {
               keyboardType: TextInputType.number,
               onSubmitted: (_) => submitData(),
             ),
-            TextButton(
-              // style: ButtonStyle(
-              //   backgroundColor: MaterialStateProperty.all<Color>(
-              //       Colors.deepOrange[200]),
-              // ),
+            Container(
+              height: 70,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      _selectedDate == null
+                          ? 'No Date Chosen !'
+                          : 'Picked Date : ${DateFormat.yMd().format(_selectedDate)}',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      _presentDatePicker();
+                    },
+                    child: Text(
+                      'Choose Date',
+                      style: TextStyle(
+                          color: Colors.purple,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(Colors.deepOrange[200]),
+              ),
               onPressed: () {
                 submitData();
                 // widget.addTx(

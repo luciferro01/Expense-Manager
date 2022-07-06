@@ -67,6 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     setState(() {
       _userTransaction.add(newTx);
+      Navigator.of(context).pop();
     });
   }
 
