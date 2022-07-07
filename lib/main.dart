@@ -3,8 +3,19 @@ import 'widgets/newTransactions.dart';
 import 'models/transactions.dart';
 import 'widgets/transactionList.dart';
 import 'widgets/chart.dart';
+import 'package:flutter/services.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  // SystemChrome.setPreferredOrientations(
+  //   [
+  //     DeviceOrientation.portraitUp,
+  //     DeviceOrientation.portraitDown
+  //   ],
+  // );
+  runApp(
+    MyApp(),
+  );
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -106,32 +117,77 @@ class _MyHomePageState extends State<MyHomePage> {
     ).toList();
   }
 
+  bool _showChart = false;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Expense Manager',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
-            // fontFamily: 'OpenSans',
-          ),
+    final bool _isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
+    final appBar = AppBar(
+      title: Text(
+        'Expense Manager',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 24,
+          // fontFamily: 'OpenSans',
         ),
-        actions: [
-          IconButton(
-            onPressed: () => _startAddNewTransaction(context),
-            icon: Icon(Icons.add),
-          ),
-        ],
       ),
+      actions: [
+        IconButton(
+          onPressed: () => _startAddNewTransaction(context),
+          icon: Icon(Icons.add),
+        ),
+      ],
+    );
+
+    final txWidgetList = Container(
+      height: (MediaQuery.of(context).size.height -
+              appBar.preferredSize.height -
+              MediaQuery.of(context).padding.top) *
+          0.7,
+      child: TransactionList(_userTransaction, _deleteTransaction),
+    );
+
+    return Scaffold(
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           // mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Chart(_recentTransactions),
-            TransactionList(_userTransaction, _deleteTransaction),
+            if (_isLandscape)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Switch(
+                      value: _showChart,
+                      onChanged: (ValueKey) {
+                        setState(() {
+                          _showChart = ValueKey;
+                        });
+                      }),
+                ],
+              ),
+            if (!_isLandscape)
+              Container(
+                height: (MediaQuery.of(context).size.height -
+                        appBar.preferredSize.height -
+                        MediaQuery.of(context).padding.top) *
+                    0.3,
+                child: Chart(_recentTransactions),
+              ),
+            if (!_isLandscape) txWidgetList,
+            if (_isLandscape)
+              _showChart
+                  ? Container(
+                      height: (MediaQuery.of(context).size.height -
+                              appBar.preferredSize.height -
+                              MediaQuery.of(context).padding.top) *
+                          0.6,
+                      child: Chart(_recentTransactions),
+                    )
+                  : txWidgetList,
           ],
         ),
       ),

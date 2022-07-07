@@ -153,32 +153,37 @@ import '../models/transactions.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transactions> transactions;
-  Function deleteTx;
+  final Function deleteTx;
 
   TransactionList(this.transactions, this.deleteTx);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 660,
+      // height: MediaQuery.of(context).size.height * 0.6,
       child: transactions.isEmpty
-          ? Column(
-              children: [
-                Text(
-                  'No Transactions added yet',
-                  style: Theme.of(context).textTheme.subtitle1,
-                ),
-                SizedBox(
-                  height: 100,
-                ),
-                Container(
-                  height: 500,
-                  child: Image.asset(
-                    'assets/images/waiting.png',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ],
+          ? LayoutBuilder(
+              builder: ((context, constraints) {
+                return Column(
+                  children: [
+                    Text(
+                      'No Transactions added yet',
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
+                    SizedBox(
+                      height: constraints.maxHeight * 0.2,
+                      // height: MediaQuery.of(context).size.height * 0.1,
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.3,
+                      child: Image.asset(
+                        'assets/images/waiting.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ],
+                );
+              }),
             )
           : ListView.builder(
               itemBuilder: (ctx, index) {
