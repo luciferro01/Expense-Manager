@@ -6,12 +6,9 @@ import 'widgets/chart.dart';
 import 'package:flutter/services.dart';
 
 void main() {
-  // SystemChrome.setPreferredOrientations(
-  //   [
-  //     DeviceOrientation.portraitUp,
-  //     DeviceOrientation.portraitDown
-  //   ],
-  // );
+  SystemChrome.setPreferredOrientations(
+    [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
+  );
   runApp(
     MyApp(),
   );
@@ -121,6 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // final mediaQuery = MediaQuery.of(context);
     final bool _isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
 
